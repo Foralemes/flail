@@ -2,8 +2,12 @@
 CXX = g++
 CC  = gcc
 
+# Release flags
 CXXFLAGS = -std=c++17 -O2 -Wall -Iinclude
 CFLAGS   = -O2 -Wall -Iinclude
+
+# Debug flags
+DEBUG_FLAGS = -g -O0 -DDEBUG -DRAYLIB_DEBUG
 
 SRC_CPP = src/main.cpp
 SRC_C   = lib/flecs/flecs.c
@@ -22,6 +26,10 @@ RAYLIB_LOCAL = lib/libraylib.a
 # ---------- RULES ----------
 all: $(TARGET)
 
+debug: CXXFLAGS += $(DEBUG_FLAGS)
+debug: CFLAGS   += $(DEBUG_FLAGS)
+debug: clean all
+
 $(TARGET): $(OBJ_CPP) $(OBJ_C)
 	$(CXX) $(OBJ_CPP) $(OBJ_C) $(RAYLIB_LOCAL) -o $(TARGET) $(SYSTEM_LIBS)
 
@@ -35,4 +43,7 @@ clean:
 	rm -f $(TARGET) $(OBJ_CPP) $(OBJ_C)
 
 run: all
+	./$(TARGET)
+
+run-debug: debug
 	./$(TARGET)
